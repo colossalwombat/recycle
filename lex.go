@@ -41,14 +41,18 @@ func check(e error) {
 
 func insert(list []token, tk token, position int) ([]token){
 	//does the actual insertion
-	list = append(list, token{})
-	copy(list[position+1:], list[position:])
+
+	//check if the underlying capacity is insufficient
+	if cap(list) <= len(list) + 1 {
+		new_list := make([]token, len(list) + 1, len(list) + 1)
+		copy(new_list, list)
+		list = new_list
+	}
+
+
+	copy(list[position+1:], list[position:len(list) - 1])
 	list[position] = tk
 
-	//fixes a slice issue, will rework later
-	/*if len(list) > 2 {
-		list = list[:len(list) -1]
-	}*/
 
 	return list
 
@@ -68,10 +72,7 @@ func addToTokenList(list []token, tk token)([]token){
 		}
 	}
 
-
-	list = append(list, token{})
 	for i := 0; i < len(list); i++ {
-		//fmt.Printf("%d < %d, %d > %d\n", tk.index, list[i].index, tk.index, list[i - 1].index)
 		if tk.index < list[i].index{
 			//insert the token
 			return insert(list, tk, i)
@@ -82,9 +83,9 @@ func addToTokenList(list []token, tk token)([]token){
 	return nil
 }
 
-func main(){ 
+func ParseFile(filename string){ 
 
-	data, err := ioutil.ReadFile("/Users/Jack/Desktop/return_2.c")
+	data, err := ioutil.ReadFile(filename)
 	check(err)
 
 	token_list := []token{}
@@ -100,7 +101,6 @@ func main(){
 		for j := 0; j < len(results); j++ {
 			new_token := token{i+2, 0, "", positions[j][0]}
 			token_list = addToTokenList(token_list, new_token)
-			fmt.Println(token_list)
 		}
 	}
 
@@ -122,14 +122,14 @@ func main(){
 				new_token.kind = KEYWORD
 				new_token.key = j+2
 				new_token.index = id_results_pos[i][0]
-				addToTokenList(token_list, new_token)
+				token_list = addToTokenList(token_list, new_token)
 				continue RESULT_LOOP
 			}
 		}
 		new_token.kind = IDENTIFIER
 		new_token.id_string = string(id_results[i])
 		new_token.index = id_results_pos[i][0]
-		addToTokenList(token_list, new_token)
+		token_list = addToTokenList(token_list, new_token)
 	}
 
 	fmt.Println(token_list)
