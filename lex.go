@@ -22,6 +22,7 @@ const INT_LIT = 9
 const INT_KEY = 2
 const RETURN_KEY = 3
 
+
 type token struct {
 	kind int
 	key int
@@ -83,7 +84,7 @@ func addToTokenList(list []token, tk token)([]token){
 	return nil
 }
 
-func ParseFile(filename string){ 
+func parseFile(filename string) ([]token){ 
 
 	data, err := ioutil.ReadFile(filename)
 	check(err)
@@ -133,5 +134,6 @@ func ParseFile(filename string){
 	}
 
 	fmt.Println(token_list)
+	return token_list
 
 }

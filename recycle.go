@@ -5,5 +5,5 @@ import(
 )
 
 func main(){
-	ParseFile("/Users/Jack/Desktop/return_2.c")
+	parseFile("/Users/Jack/Desktop/return_2.c")
 }
